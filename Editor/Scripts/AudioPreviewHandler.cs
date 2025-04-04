@@ -23,7 +23,7 @@ namespace AudioCutterTool
                 CreateTempAudioObject();
             }
 
-            previewClip = audioProcessor.CreateCutClip(sourceClip, startTime, endTime); // Nesne üzerinden çağırıldı
+            previewClip = audioProcessor.CreateCutClip(sourceClip, startTime, endTime);  
             if (previewClip != null)
             {
                 AudioSource audioSource = tempAudioObject.GetComponent<AudioSource>();

@@ -63,8 +63,7 @@ namespace AudioCutterTool
 
             uiHandler.DrawTimeControls(sourceClip, ref startTime, ref endTime);
             uiHandler.DrawExportSettings(ref savePath, ref saveFileName);
-
-            // Check if audio finished playing
+  
             if (previewHandler.IsPlaying && !previewHandler.IsAudioPlaying())
             {
                 previewHandler.IsPlaying = false;
