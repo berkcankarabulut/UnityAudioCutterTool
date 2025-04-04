@@ -2,47 +2,52 @@
 using UnityEditor;
 using System.IO;
 
-public class AudioExporter
+namespace AudioCutterTool
 {
-    private AudioProcessor audioProcessor;
-
-    public AudioExporter(AudioProcessor audioProcessor)
+    public class AudioExporter
     {
-        this.audioProcessor = audioProcessor;
-    }
-    
-    public void CutAndSave(AudioClip sourceClip, float startTime, float endTime, string savePath, string saveFileName)
-    {
-        if (sourceClip == null) return;
+        private AudioProcessor audioProcessor;
 
-        AudioClip cutClip = audioProcessor.CreateCutClip(sourceClip, startTime, endTime);
-        if (cutClip == null)
+        public AudioExporter(AudioProcessor audioProcessor)
         {
-            EditorUtility.DisplayDialog("Error", "Please specify a valid cutting range.", "OK");
-            return;
+            this.audioProcessor = audioProcessor;
         }
 
-        string finalPath = GetFinalPath(savePath, saveFileName);
-        
-        if (audioProcessor.SaveWav(finalPath, cutClip))
+        public void CutAndSave(AudioClip sourceClip, float startTime, float endTime, string savePath,
+            string saveFileName)
         {
-            AssetDatabase.Refresh();
-            EditorUtility.DisplayDialog("Success", $"Audio file saved to:\n{finalPath}", "OK");
-            EditorUtility.RevealInFinder(finalPath);
-        }
-        else
-        {
-            EditorUtility.DisplayDialog("Error", "Failed to save audio file.", "OK");
-        }
-    }
+            if (sourceClip == null) return;
 
-    private string GetFinalPath(string savePath, string saveFileName)
-    {
-        if (string.IsNullOrEmpty(savePath))
-        {
-            savePath = Path.Combine(Application.dataPath, "Audio");
-            if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
+            AudioClip cutClip = audioProcessor.CreateCutClip(sourceClip, startTime, endTime);
+            if (cutClip == null)
+            {
+                EditorUtility.DisplayDialog("Error", "Please specify a valid cutting range.", "OK");
+                return;
+            }
+
+            string finalPath = GetFinalPath(savePath, saveFileName);
+
+            if (audioProcessor.SaveWav(finalPath, cutClip))
+            {
+                AssetDatabase.Refresh();
+                EditorUtility.DisplayDialog("Success", $"Audio file saved to:\n{finalPath}", "OK");
+                EditorUtility.RevealInFinder(finalPath);
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Error", "Failed to save audio file.", "OK");
+            }
         }
-        return Path.Combine(savePath, saveFileName);
+
+        private string GetFinalPath(string savePath, string saveFileName)
+        {
+            if (string.IsNullOrEmpty(savePath))
+            {
+                savePath = Path.Combine(Application.dataPath, "Audio");
+                if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
+            }
+
+            return Path.Combine(savePath, saveFileName);
+        }
     }
 }

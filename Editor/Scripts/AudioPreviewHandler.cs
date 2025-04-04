@@ -1,65 +1,69 @@
 ﻿using UnityEngine;
 
-public class AudioPreviewHandler
+namespace AudioCutterTool
 {
-    private GameObject tempAudioObject;
-    private AudioClip previewClip; 
-    public bool IsPlaying { get; set; }
-    private AudioProcessor audioProcessor;
-    public AudioPreviewHandler(AudioProcessor audioProcessor)
+    public class AudioPreviewHandler
     {
-        this.audioProcessor = audioProcessor;
-    }
-    
-    public void PlayPreview(AudioClip sourceClip, float startTime, float endTime)
-    {
-        StopPreview();
-        
-        if (tempAudioObject == null)
+        private GameObject tempAudioObject;
+        private AudioClip previewClip;
+        public bool IsPlaying { get; set; }
+        private AudioProcessor audioProcessor;
+
+        public AudioPreviewHandler(AudioProcessor audioProcessor)
         {
-            CreateTempAudioObject();
+            this.audioProcessor = audioProcessor;
         }
 
-        previewClip = audioProcessor.CreateCutClip(sourceClip, startTime, endTime); // Nesne üzerinden çağırıldı
-        if (previewClip != null)
+        public void PlayPreview(AudioClip sourceClip, float startTime, float endTime)
         {
+            StopPreview();
+
+            if (tempAudioObject == null)
+            {
+                CreateTempAudioObject();
+            }
+
+            previewClip = audioProcessor.CreateCutClip(sourceClip, startTime, endTime); // Nesne üzerinden çağırıldı
+            if (previewClip != null)
+            {
+                AudioSource audioSource = tempAudioObject.GetComponent<AudioSource>();
+                audioSource.clip = previewClip;
+                audioSource.Play();
+                IsPlaying = true;
+            }
+        }
+
+        public void StopPreview()
+        {
+            if (IsPlaying && tempAudioObject != null)
+            {
+                AudioSource audioSource = tempAudioObject.GetComponent<AudioSource>();
+                if (audioSource != null) audioSource.Stop();
+                IsPlaying = false;
+            }
+        }
+
+        public void CleanUp()
+        {
+            if (tempAudioObject != null)
+            {
+                Object.DestroyImmediate(tempAudioObject);
+            }
+        }
+
+        public bool IsAudioPlaying()
+        {
+            if (tempAudioObject == null) return false;
             AudioSource audioSource = tempAudioObject.GetComponent<AudioSource>();
-            audioSource.clip = previewClip;
-            audioSource.Play();
-            IsPlaying = true;
+            return audioSource != null && audioSource.isPlaying;
         }
-    }
 
-    public void StopPreview()
-    {
-        if (IsPlaying && tempAudioObject != null)
+        private void CreateTempAudioObject()
         {
-            AudioSource audioSource = tempAudioObject.GetComponent<AudioSource>();
-            if (audioSource != null) audioSource.Stop();
-            IsPlaying = false;
+            tempAudioObject = new GameObject("TempAudioProcessor");
+            tempAudioObject.hideFlags = HideFlags.HideAndDontSave;
+            AudioSource audioSource = tempAudioObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
         }
-    }
-
-    public void CleanUp()
-    {
-        if (tempAudioObject != null)
-        {
-            Object.DestroyImmediate(tempAudioObject);
-        }
-    }
-    
-    public bool IsAudioPlaying()
-    {
-        if (tempAudioObject == null) return false;
-        AudioSource audioSource = tempAudioObject.GetComponent<AudioSource>();
-        return audioSource != null && audioSource.isPlaying;
-    }
-    
-    private void CreateTempAudioObject()
-    {
-        tempAudioObject = new GameObject("TempAudioProcessor");
-        tempAudioObject.hideFlags = HideFlags.HideAndDontSave;
-        AudioSource audioSource = tempAudioObject.AddComponent<AudioSource>();
-        audioSource.playOnAwake = false;
     }
 }
