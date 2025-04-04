@@ -10,16 +10,16 @@ public class WaveformVisualizer
     private float waveformHeight = 100f;
     private Color waveformColor = new Color(0.3f, 0.65f, 1f);
     private Color selectedAreaColor = new Color(0.3f, 0.85f, 0.3f, 0.3f);
-    private GUIStyle timelineLabelStyle;
-    
-    public WaveformVisualizer()
+    private GUIStyle timelineLabelStyle = new()
     {
-        timelineLabelStyle = new GUIStyle();
-        timelineLabelStyle.normal.textColor = Color.white;
-        timelineLabelStyle.fontSize = 10;
-        timelineLabelStyle.alignment = TextAnchor.MiddleCenter;
-    }
-    
+        normal =
+        {
+            textColor = Color.white
+        },
+        fontSize = 10,
+        alignment = TextAnchor.MiddleCenter
+    };
+
     public void GenerateWaveformData(AudioClip clip)
     {
         if (clip == null) return;
@@ -142,5 +142,10 @@ public class WaveformVisualizer
         }
         
         return timeChanged;
+    }
+
+    public bool DrawWaveformControls(AudioClip clip, ref float startTime, ref float endTime)
+    {
+        return DrawWaveform(clip, ref startTime, ref endTime);
     }
 }
