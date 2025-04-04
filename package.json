@@ -1,0 +1,11 @@
+{
+  "name": "com.berkcankarabulut.audioeditor",
+  "version": "1.0.0",
+  "displayName": "Audio Editor",
+  "description": "A Unity-based tool for audio clip editing, waveform visualization, and saving audio clips in WAV format.",
+  "author": {
+    "name": "Berkcan Karabulut",
+    "url": "https://github.com/berkcankarabulut"
+  },
+  "dependencies": {}
+}
